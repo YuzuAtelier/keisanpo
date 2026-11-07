@@ -1,5 +1,5 @@
 // 内容を更新したら CACHE の番号を上げる（例：v1 → v2）。上げないと古い画面のままになる
-const CACHE = 'keisanpo-v1';
+const CACHE = 'keisanpo-v2';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {

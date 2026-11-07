@@ -14,7 +14,11 @@
 :root{
   --add:#FF8A3D;--sub:#3D8BFF;--mul:#22B866;--div:#9B5DE5;--mix:#F2A900;
   --bg:#FFF7E8;--ink:#4A3B2A;--card:#FFFFFF;--muted:#B5A48C;--soft:#FFEBC9;--good:#22B866;--line:#F0E2C8;
+  --subink:#7E6548; /* 説明の文字（うすすぎず、本文よりひかえめ） */
 }
+.jp .w{display:inline-block;text-indent:0}
+/* 2行に なるときは 行の ながさを そろえる（「なるよ」だけ 1行に のこる、を ふせぐ） */
+.jp,.bubble,.mtext,.sticker .n,.rtext,.rsub,.unlock,.mbox .mt,.mbox .ms,.feedback{text-wrap:balance}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
   font-family:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","BIZ UDPGothic","Yu Gothic UI","Meiryo",system-ui,sans-serif;
@@ -38,35 +42,35 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .gear svg{position:absolute;inset:-4px;width:60px;height:60px;transform:rotate(-90deg);pointer-events:none}
 .gear circle{fill:none;stroke:var(--add);stroke-width:5;stroke-dasharray:170;stroke-dashoffset:170}
 .gear.hold circle{transition:stroke-dashoffset 3s linear;stroke-dashoffset:0}
-.gearlabel{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
+.gearlabel{font-size:13px;color:var(--subink);text-align:center;margin-top:2px}
 
 /* home */
 .hero{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
-.bubble{background:var(--card);border-radius:24px;padding:12px 20px;font-size:21px;font-weight:700;position:relative;max-width:92%;text-align:center;box-shadow:0 3px 0 rgba(74,59,42,.08);min-height:52px}
+.bubble{background:var(--card);border-radius:24px;padding:12px 10px;font-size:clamp(20px,6vw,24px);line-height:1.45;font-weight:800;position:relative;max-width:100%;text-align:center;box-shadow:0 3px 0 rgba(74,59,42,.08);min-height:52px}
 .bubble:after{content:"";position:absolute;bottom:-14px;left:50%;margin-left:-12px;border:12px solid transparent;border-top-color:var(--card);border-bottom:0}
 .chara{font-size:120px;line-height:1.1;padding:6px 10px;filter:drop-shadow(0 6px 0 rgba(74,59,42,.12))}
 .chara.bounce{animation:bounce .6s}
 @keyframes bounce{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-24px) scale(1.06,.95)}60%{transform:translateY(0) scale(.96,1.05)}}
-.grow{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:var(--muted);width:min(320px,80%)}
+.grow{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:800;color:var(--subink);width:min(340px,86%)}
 .growbar{flex:1;height:14px;background:var(--line);border-radius:999px;overflow:hidden}
 .growbar i{display:block;height:100%;background:linear-gradient(90deg,#FFC94A,#FF8A3D);border-radius:999px}
 .missions{background:var(--card);border-radius:24px;padding:12px 14px;box-shadow:0 4px 0 rgba(74,59,42,.08)}
-.mtitle{font-size:18px;font-weight:800;color:var(--muted);margin:0 4px 6px}
-.mission{display:flex;align-items:center;gap:12px;padding:8px 6px;border-top:2px dashed var(--line)}
+.mtitle{font-size:20px;font-weight:900;color:var(--subink);margin:0 4px 6px}
+.mission{display:flex;align-items:center;gap:12px;padding:10px 6px;border-top:2px dashed var(--line)}
 .mission:first-of-type{border-top:none}
-.micon{font-size:32px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:var(--soft);border-radius:14px;flex:none;font-weight:900}
-.mtext{flex:1;font-size:19px;font-weight:700;line-height:1.3}
-.mprog{font-size:18px;font-weight:800;color:var(--muted);white-space:nowrap}
-.mission.done .mtext{color:var(--muted)}
-.mission.done .mprog{font-size:32px}
-.dots i{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--line);margin:0 2px}
+.micon{font-size:32px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--soft);border-radius:14px;flex:none;font-weight:900}
+.mtext{flex:1;font-size:21px;font-weight:800;line-height:1.4}
+.mprog{font-size:21px;font-weight:900;color:var(--subink);white-space:nowrap}
+.mission.done .mtext{color:var(--subink);opacity:.75}
+.mission.done .mprog{font-size:34px}
+.dots i{display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--line);margin:0 2px}
 .dots i.on{background:#FF8A3D}
 .play{width:100%;min-height:88px;font-size:34px;background:linear-gradient(180deg,#FFB547,#FF8A3D);color:#fff;border-radius:30px;box-shadow:0 7px 0 #D86A22}
 .play:active{box-shadow:0 2px 0 #D86A22}
 .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .row3 .btn{flex-direction:column;font-size:34px;gap:2px;min-height:96px;position:relative}
-.row3 .btn span{font-size:15px;white-space:nowrap}
-.badge{position:absolute;top:6px;right:10px;background:#FF5A5A;color:#fff;font-style:normal;font-size:15px;border-radius:999px;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.row3 .btn span{font-size:clamp(16px,4.9vw,19px);white-space:nowrap}
+.badge{position:absolute;top:6px;right:10px;background:#FF5A5A;color:#fff;font-style:normal;font-size:17px;border-radius:999px;min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0 6px}
 
 /* titles */
 .title{font-size:30px;text-align:center;margin:4px 0 6px;font-weight:900}
@@ -76,12 +80,12 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .optile{background:var(--c);color:#fff;border-radius:28px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 7px 0 rgba(0,0,0,.18);transition:transform .08s}
 .optile:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
 .opsym{font-size:76px;font-weight:900;line-height:1}
-.opname{font-size:22px;font-weight:800}
-.opemoji{font-size:24px}
+.opname{font-size:26px;font-weight:900}
+.opemoji{font-size:26px}
 
 /* level select */
 .modesw{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.mode{background:var(--card);border-radius:22px;min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:16px;font-weight:800;border:4px solid transparent;color:var(--muted);box-shadow:0 4px 0 rgba(74,59,42,.1)}
+.mode{background:var(--card);border-radius:22px;min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:clamp(16px,4.9vw,20px);font-weight:900;white-space:nowrap;border:4px solid transparent;color:var(--subink);box-shadow:0 4px 0 rgba(74,59,42,.1)}
 .mode.on{border-color:var(--c);color:var(--ink)}
 .ico4{display:grid;grid-template-columns:16px 16px;gap:4px}
 .ico4 i{width:16px;height:16px;border-radius:5px;background:var(--c)}
@@ -91,7 +95,7 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .levels{display:flex;flex-direction:column;gap:12px}
 .lvl{background:var(--card);border-radius:24px;min-height:78px;display:flex;align-items:center;gap:14px;padding:8px 18px;box-shadow:0 5px 0 rgba(74,59,42,.12);border-left:12px solid var(--c);position:relative;text-align:left}
 .lvl:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(74,59,42,.12)}
-.lvstars{color:#FFB000;font-size:18px;min-width:94px;letter-spacing:-2px;white-space:nowrap}
+.lvstars{color:#F5A300;font-size:22px;min-width:96px;letter-spacing:-3px;white-space:nowrap}
 .lvdesc{font-size:clamp(20px,6vw,26px);font-weight:900;flex:1;font-variant-numeric:tabular-nums;white-space:nowrap}
 .lvl.locked{background:#EFE6D6;border-left-color:#CDBFA8}
 .lvl.locked .lvdesc,.lvl.locked .lvstars{opacity:.35}
@@ -104,14 +108,14 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .qhead{display:flex;align-items:center;gap:8px;min-height:64px}
 .qhead .starcount{padding:6px 12px;font-size:20px}
 .qhead .starcount b{font-size:22px}
-.progress{flex:1;display:flex;justify-content:center;gap:4px;flex-wrap:nowrap;min-width:0}
-.progress i{width:12px;height:12px;flex:none;border-radius:50%;background:var(--line);display:block}
+.progress{flex:1;display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:nowrap;min-width:0}
+.progress i{flex:0 1 18px;min-width:8px;aspect-ratio:1;border-radius:50%;background:var(--line);display:block}
 .progress i.cur{background:#fff;box-shadow:0 0 0 3px var(--c)}
 .progress i.ok{background:#FFB000}
 .progress i.retry{background:#FFD983}
 .progress i.miss{background:#CDBFA8}
 .qcard{background:var(--card);border-radius:30px;padding:18px 12px 14px;box-shadow:0 6px 0 rgba(74,59,42,.1);border-top:12px solid var(--c);display:flex;flex-direction:column;align-items:center;gap:8px}
-.review-tag{font-size:16px;font-weight:800;color:#fff;background:#FF6FA0;border-radius:999px;padding:3px 14px}
+.review-tag{font-size:19px;font-weight:800;color:#fff;background:#FF6FA0;border-radius:999px;padding:3px 14px}
 .prob{display:flex;align-items:center;justify-content:center;gap:.25em;font-weight:900;font-size:clamp(44px,13vw,84px);line-height:1.1;font-variant-numeric:tabular-nums;flex-wrap:nowrap;white-space:nowrap}
 .prob.long{font-size:clamp(34px,9.5vw,68px)}
 .prob.xlong{font-size:clamp(28px,7.6vw,56px)}
@@ -120,11 +124,12 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .qtools{display:flex;gap:12px}
 .tool{width:64px;height:64px;border-radius:50%;background:var(--soft);font-size:30px;box-shadow:0 4px 0 rgba(74,59,42,.12)}
 .tool:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(74,59,42,.12)}
-.hint{display:none;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;font-size:28px;padding:6px;max-width:100%}
+/* ヒント：りんごは 5こずつ ならべる。かずが おおいほど ちいさく して、こたえの ボタンを おしださない */
+.hint{display:none;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;font-size:var(--hs,26px);line-height:1.15;padding:2px;max-width:100%}
 .hint.show{display:flex}
-.hgroup{display:flex;flex-wrap:wrap;gap:2px;max-width:170px;justify-content:center;background:var(--soft);border-radius:14px;padding:6px}
-.hgroup.plate{border-radius:50%;padding:10px;min-width:64px;min-height:64px;align-content:center}
-.hsym{font-size:34px;font-weight:900;color:var(--c)}
+.hgroup{display:grid;grid-template-columns:repeat(var(--hc,5),1.1em);gap:1px;justify-content:center;background:var(--soft);border-radius:12px;padding:4px 5px}
+.hgroup.plate{border-radius:50%;padding:10px;min-width:56px;min-height:56px;align-content:center}
+.hsym{font-size:30px;font-weight:900;color:var(--c)}
 .gone{opacity:.25;position:relative}
 .feedback{min-height:56px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;text-align:center}
 .feedback.good{color:var(--good)}
@@ -149,38 +154,40 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .result{display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:10px}
 .bigstars{font-size:72px;letter-spacing:6px}
 .bigstars .off{filter:grayscale(1);opacity:.25}
-.rtext{font-size:26px;font-weight:900;text-align:center}
-.rsub{font-size:22px;font-weight:800;color:var(--muted)}
+.rtext{font-size:28px;font-weight:900;text-align:center;line-height:1.4}
+.rsub{font-size:22px;font-weight:900;color:var(--subink);text-align:center}
 .gain{font-size:40px;font-weight:900;background:var(--card);border-radius:999px;padding:8px 28px;box-shadow:0 4px 0 rgba(74,59,42,.1)}
-.unlock{background:#FFF0D6;border:4px solid #FFB000;border-radius:22px;padding:10px 18px;font-size:22px;font-weight:900;text-align:center}
+.unlock{background:#FFF0D6;border:4px solid #FFB000;border-radius:22px;padding:10px 18px;font-size:24px;font-weight:900;text-align:center;line-height:1.4}
+.ustars{color:#F5A300;font-size:28px;letter-spacing:-2px}
 .rbtns{display:flex;flex-direction:column;gap:12px;width:100%;margin-top:6px}
 .rbtns .btn{width:100%;min-height:78px;font-size:26px}
 .rbtns .primary{background:var(--c);color:#fff}
 
 /* stickers */
-.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
-.sticker{background:var(--card);border-radius:20px;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 4px 0 rgba(74,59,42,.1);padding:6px}
-.sticker .e{font-size:48px}
-.sticker .n{font-size:13px;font-weight:700;text-align:center;line-height:1.25}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.sticker{background:var(--card);border-radius:20px;min-height:136px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 0 rgba(74,59,42,.1);padding:10px 8px}
+.sticker .e{font-size:56px;line-height:1.1}
+.sticker .n{font-size:18px;font-weight:800;text-align:center;line-height:1.35}
 .sticker.no .e{filter:brightness(0);opacity:.15}
-.sticker.no .n{color:var(--muted)}
+.sticker.no .n{color:var(--muted);font-size:24px}
 .scount{text-align:center;font-size:22px;font-weight:800}
 
 /* calendar */
 .calhead{display:flex;align-items:center;justify-content:space-between}
 .calhead .m{font-size:28px;font-weight:900}
 .calbox{background:var(--card);border-radius:24px;padding:12px;box-shadow:0 4px 0 rgba(74,59,42,.08)}
-.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
-.calgrid .w{font-size:14px;font-weight:800;color:var(--muted);padding:4px 0}
-.calgrid .d{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;font-size:15px;font-weight:700;background:#FFFBF3}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.calgrid .w{font-size:clamp(14px,4.4vw,18px);font-weight:900;color:var(--subink);padding:4px 0;white-space:nowrap}
+.calgrid .d{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;font-size:18px;font-weight:800;background:#FFFBF3}
 .calgrid .d.empty{background:none}
-.calgrid .d.play{background:#FFE3EC}
-.calgrid .d.play b{font-size:24px;line-height:1}
+.calgrid .d.played{background:#FFE3EC}
+.calgrid .d.played b{font-size:clamp(16px,5vw,26px);line-height:1}
+.calgrid .d.played span{font-size:clamp(13px,3.8vw,18px);line-height:1.1}
 .calgrid .d.today{box-shadow:inset 0 0 0 3px #FFB000}
 .totals{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
 .total{background:var(--card);border-radius:22px;padding:10px 20px;text-align:center;box-shadow:0 4px 0 rgba(74,59,42,.08)}
 .total .v{font-size:40px;font-weight:900}
-.total .l{font-size:16px;font-weight:800;color:var(--muted)}
+.total .l{font-size:19px;font-weight:900;color:var(--subink)}
 .total.small .v{font-size:26px}
 
 /* parent */
@@ -217,15 +224,15 @@ table.stats th:first-child,table.stats td:first-child{text-align:left}
 .linkbtn{font-size:15px;color:#8A7A64;text-decoration:underline;padding:8px}
 
 /* overlays */
-#toast{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top));transform:translate(-50%,-160%);background:#fff;border-radius:22px;padding:12px 22px;font-size:20px;font-weight:900;box-shadow:0 8px 24px rgba(74,59,42,.25);z-index:50;display:flex;align-items:center;gap:10px;transition:transform .35s cubic-bezier(.2,1.4,.4,1);width:max-content;max-width:92vw;pointer-events:none}
+#toast{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top));transform:translate(-50%,-160%);background:#fff;border-radius:22px;padding:12px 22px;font-size:22px;line-height:1.4;font-weight:900;box-shadow:0 8px 24px rgba(74,59,42,.25);z-index:50;display:flex;align-items:center;gap:10px;transition:transform .35s cubic-bezier(.2,1.4,.4,1);width:max-content;max-width:92vw;pointer-events:none}
 #toast.show{transform:translate(-50%,0)}
 #toast .te{font-size:38px}
 #modal{position:fixed;inset:0;background:rgba(74,59,42,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
 #modal.show{display:flex}
 .mbox{background:var(--bg);border-radius:30px;padding:24px 20px;max-width:420px;width:100%;text-align:center;display:flex;flex-direction:column;gap:14px;animation:pop .35s}
 .mbox .me{font-size:96px;line-height:1.1}
-.mbox .mt{font-size:26px;font-weight:900}
-.mbox .ms{font-size:18px;font-weight:700;color:#8A7A64;line-height:1.5}
+.mbox .mt{font-size:28px;font-weight:900;line-height:1.4}
+.mbox .ms{font-size:21px;font-weight:800;color:var(--subink);line-height:1.5}
 .mbtns{display:flex;gap:12px}
 .mbtns .btn{flex:1;font-size:22px}
 .mbtns .primary{background:var(--add);color:#fff}
@@ -240,6 +247,28 @@ table.stats th:first-child,table.stats td:first-child{text-align:left}
   .opgrid{grid-template-columns:repeat(4,1fr)}
   .optile{min-height:200px}
   .chara{font-size:140px}
+}
+/* タブレットの 横向き：左右 2れつに して、スクロール しなくても 見えるように する */
+@media (orientation:landscape) and (min-width:900px){
+  #app{max-width:1180px;padding-left:24px;padding-right:24px}
+  #app.scr-home{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-rows:auto auto auto 1fr;column-gap:28px;row-gap:14px;align-content:start}
+  .scr-home .topbar{grid-column:1/-1}
+  .scr-home .hero{grid-column:1;grid-row:2/5;justify-content:center}
+  .scr-home .missions,.scr-home .play,.scr-home .row3{grid-column:2}
+  .scr-home .row3{align-self:start}
+  .scr-home .chara{font-size:170px}
+  #app.scr-question{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:24px;row-gap:12px;align-content:start}
+  .scr-question .qhead{grid-column:1/-1}
+  .scr-question .qcard{grid-column:1;grid-row:2/4;align-self:start}
+  .scr-question .feedback{grid-column:2;grid-row:2}
+  .scr-question #answer{grid-column:2;grid-row:3}
+  .scr-question .numpad .btn{min-height:68px}
+  .scr-question .choice{min-height:clamp(96px,22vh,170px);font-size:clamp(40px,6vw,64px)}
+  .scr-question .choice.small{font-size:clamp(30px,4.4vw,48px)}
+  .scr-result .result{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;row-gap:10px;justify-items:center;align-items:center}
+  .scr-result .result > *{grid-column:1}
+  .scr-result .result > .rbtns{grid-column:2;grid-row:1/span 8;align-self:center}
+  .calgrid .d{aspect-ratio:auto;min-height:60px}
 }
 @media (max-height:640px){
   .chara{font-size:88px}
@@ -482,6 +511,13 @@ function today(){ return dayStr(new Date()); }
 function daysBetween(a, b){ return Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000); }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c])); }
 function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+// ことばの かたまり（スペース・「。」「、」「！」「？」のあと）の とちゅうで 行が かわらないようにする
+// 文の とちゅうの「。」の あとは かならず 改行する
+// 「ほし +3」のように  （くっつく スペース）で つないだ ところは わけない
+function jp(s){
+  return '<span class="jp">' + String(s).split(/[ \t\n]+/).filter(Boolean).map(w =>
+    '<span class="w">' + esc(w).replace(/。(?=.)/g, '。</span><br><span class="w">').replace(/([、！？])(?=.)/g, '$1</span>&#8203;<span class="w">') + '</span>').join(' ') + '</span>';
+}
 function enabledOps(){ return OP_KEYS.filter(k => D.settings.enabledOps[k]); }
 function isOpen(op, lv){ return D.settings.unlockAll || lv <= D.progress.unlocked[op]; }
 function stageIndex(stars){ let i = 0; STAGES.forEach((s, k) => { if (stars >= s.min) i = k; }); return i; }
@@ -533,7 +569,7 @@ function nextToast(){
   const t = toastQ.shift(); const el = $('#toast');
   if (!t){ toastBusy = false; return; }
   toastBusy = true;
-  el.innerHTML = '<span class="te">' + t.e + '</span><span>' + esc(t.text) + '</span>';
+  el.innerHTML = '<span class="te">' + t.e + '</span>' + jp(t.text);
   el.classList.add('show'); SFX.fanfare();
   setTimeout(() => { el.classList.remove('show'); setTimeout(nextToast, 400); }, 2400);
 }
@@ -549,8 +585,8 @@ function openModal(){
   const btns = o.buttons || [{label: 'OK', value: true, primary: true}];
   el.innerHTML = '<div class="mbox ' + (o.parent ? 'parentbox' : '') + '">' +
     (o.e ? '<div class="me">' + o.e + '</div>' : '') +
-    (o.title ? '<div class="mt">' + o.title + '</div>' : '') +
-    (o.sub ? '<div class="ms">' + o.sub + '</div>' : '') +
+    (o.title ? '<div class="mt">' + (o.parent ? o.title : jp(o.title)) + '</div>' : '') +
+    (o.sub ? '<div class="ms">' + (o.parent ? o.sub : jp(o.sub)) + '</div>' : '') +
     '<div class="mbtns">' + btns.map((b, i) => '<button class="btn ' + (b.primary ? 'primary' : '') + '" data-mi="' + i + '">' + b.label + '</button>').join('') + '</div></div>';
   el.classList.add('show');
   el.querySelectorAll('[data-mi]').forEach(b => b.onclick = () => {
@@ -627,10 +663,10 @@ function bumpMission(type, amount, filter, absolute){
     m.progress = absolute ? Math.max(m.progress, amount) : m.progress + amount;
     if (m.progress >= m.target){
       m.progress = m.target; m.done = true; addStars(3);
-      toast('💮', 'おやくそく できた！ ほし +3');
+      toast('💮', 'おやくそく できた！ ほし +3');
       if (D.daily.missions.every(x => x.done)){
         addStars(5); D.progress.counters.missionAll++;
-        toast('🌸', 'きょうの おやくそく ぜんぶ できた！ ほし +5');
+        toast('🌸', 'きょうの おやくそく ぜんぶ できた！ ほし +5');
       }
     }
   });
@@ -669,7 +705,7 @@ function stat(op, lv){ const k = statKey(op, lv); return D.progress.stats[k] || 
 let screen = 'home';
 const sel = {op: 'add'};
 let round = null;
-function render(html){ $app.innerHTML = html; window.scrollTo(0, 0); }
+function render(html){ $app.className = 'scr-' + screen; $app.innerHTML = html; window.scrollTo(0, 0); } // scr-○○ は 横向きの ならべかたに つかう
 function topbar(o){
   o = o || {};
   return '<div class="topbar">' +
@@ -691,7 +727,7 @@ function showHome(){
   homeLineOnce = null;
   render(
     topbar({gear: true}) +
-    '<div class="hero"><div class="bubble" id="bubble">' + esc(line) + '</div>' +
+    '<div class="hero"><div class="bubble" id="bubble">' + jp(line) + '</div>' +
     '<button class="chara" id="chara" data-act="chara" aria-label="ぴよ">' + stage.e + '</button>' +
     '<div class="grow"><span>' + stage.n + '</span><div class="growbar"><i style="width:' + pct + '%"></i></div><span>' + (next ? next.e : '🎉') + '</span></div></div>' +
     '<div class="missions"><div class="mtitle">きょうの おやくそく</div>' + D.daily.missions.map(missionCard).join('') + '</div>' +
@@ -714,7 +750,7 @@ function missionCard(m){
   if (m.done) prog = '💮';
   else if (m.target <= 5) prog = '<span class="dots">' + Array.from({length: m.target}, (_, i) => '<i class="' + (i < m.progress ? 'on' : '') + '"></i>').join('') + '</span>';
   else prog = m.progress + '/' + m.target;
-  return '<div class="mission ' + (m.done ? 'done' : '') + '"><span class="micon">' + missionIcon(m) + '</span><span class="mtext">' + def.text(m) + '</span><span class="mprog">' + prog + '</span></div>';
+  return '<div class="mission ' + (m.done ? 'done' : '') + '"><span class="micon">' + missionIcon(m) + '</span><span class="mtext">' + jp(def.text(m)) + '</span><span class="mprog">' + prog + '</span></div>';
 }
 
 /* --- けいさん えらび --- */
@@ -787,11 +823,21 @@ function showQuestion(){
     '<div class="qcard">' + (p.isReview ? '<span class="review-tag">🔁 おさらい</span>' : '') +
       '<div class="prob ' + cls + '"><span>' + p.a + '</span><span class="o">' + OPS[p.op].sym + '</span><span>' + p.b + '</span><span>＝</span><span class="q" id="qmark">?</span></div>' +
       '<div class="qtools">' + (canSpeak && D.settings.speech ? '<button class="tool" data-act="say" aria-label="よみあげ">🔊</button>' : '') + (hintOk ? '<button class="tool" data-act="hint" aria-label="ヒント">💡</button>' : '') + '</div>' +
-      '<div class="hint" id="hint">' + (hintOk ? hintHTML(p) : '') + '</div>' +
+      '<div class="hint" id="hint" style="--hs:' + (hintOk ? hintSize(p) : 26) + 'px">' + (hintOk ? hintHTML(p) : '') + '</div>' +
     '</div>' +
     '<div class="feedback" id="fb"></div>' +
     '<div id="answer">' + ans + '</div></div>');
+  fitProb();
 }
+// もんだいの 数字を、カードの はばに 合わせて できるだけ 大きく する（こたえが 入ったら もういちど 合わせなおす）
+function fitProb(){
+  const el = $('.prob'); if (!el || !round) return;
+  el.style.fontSize = '';
+  const kids = el.children, used = kids[kids.length - 1].getBoundingClientRect().right - kids[0].getBoundingClientRect().left;
+  const avail = el.parentElement.clientWidth - 32, base = parseFloat(getComputedStyle(el).fontSize);
+  el.style.fontSize = Math.max(22, Math.min(base * avail / used, 80, innerHeight * 0.12)) + 'px';
+}
+window.addEventListener('resize', () => { if (screen === 'question') fitProb(); });
 function sayProblem(){ const p = cur(); speak(p.a + ' ' + OPS[p.op].say + ' ' + p.b + ' は いくつ？'); }
 function hintAvailable(p){
   if (p.op === 'div') return p.a <= 9;
@@ -800,12 +846,17 @@ function hintAvailable(p){
   return false;
 }
 function apples(n, e, cls){ let s = ''; for (let i = 0; i < n; i++) s += '<span class="' + (cls && cls(i) ? 'gone' : '') + '">' + e + '</span>'; return s; }
+function hintSize(p){
+  const total = p.op === 'add' ? p.a + p.b : p.op === 'mul' ? p.a * p.b : p.a;
+  return total <= 10 ? 30 : total <= 18 ? 24 : total <= 40 ? 19 : 14;
+}
 function hintHTML(p){
   const sym = '<span class="hsym">' + OPS[p.op].sym + '</span>';
-  if (p.op === 'add') return '<div class="hgroup">' + apples(p.a, '🍎') + '</div>' + sym + '<div class="hgroup">' + apples(p.b, '🍏') + '</div>';
-  if (p.op === 'sub') return '<div class="hgroup">' + apples(p.a, '🍎', i => i >= p.a - p.b) + '</div>';
-  if (p.op === 'mul') return Array.from({length: p.b}, () => '<div class="hgroup">' + apples(p.a, '🍎') + '</div>').join('');
-  if (p.op === 'div') return Array.from({length: p.b}, () => '<div class="hgroup plate">' + apples(p.answer, '🍎') + '</div>').join('');
+  const g = n => '<div class="hgroup" style="--hc:' + Math.min(n, 5) + '">';
+  if (p.op === 'add') return g(p.a) + apples(p.a, '🍎') + '</div>' + sym + g(p.b) + apples(p.b, '🍏') + '</div>';
+  if (p.op === 'sub') return g(p.a) + apples(p.a, '🍎', i => i >= p.a - p.b) + '</div>';
+  if (p.op === 'mul') return Array.from({length: p.b}, () => g(p.a) + apples(p.a, '🍎') + '</div>').join('');
+  if (p.op === 'div') return Array.from({length: p.b}, () => '<div class="hgroup plate" style="--hc:' + Math.min(p.answer, 3) + '">' + apples(p.answer, '🍎') + '</div>').join('');
   return '';
 }
 function giveAnswer(v, el){
@@ -836,10 +887,10 @@ function onCorrect(el){
   addStars(gain); R.gained += gain;
   markPlayDay(); checkStickers(); save();
   SFX.correct();
-  const q = $('#qmark'); if (q){ q.textContent = p.answer; }
+  const q = $('#qmark'); if (q){ q.textContent = p.answer; fitProb(); }
   if (el && el.classList.contains('choice')) el.classList.add('right');
   const praise = (nick() && Math.random() < 0.3) ? nick() + '、すごい！' : pick(PRAISE);
-  const fb = $('#fb'); fb.className = 'feedback good'; fb.textContent = '⭕ ' + praise + (gain > 1 ? '  ⭐+' + gain : '');
+  const fb = $('#fb'); fb.className = 'feedback good'; fb.innerHTML = jp('⭕ ' + praise + (gain > 1 ? '  ⭐+' + gain : ''));
   for (let i = 0; i < Math.min(gain, 3); i++) setTimeout(() => flyStar(el || q), i * 120);
   setTimeout(updateStarCount, 760);
   setTimeout(nextQuestion, 1300);
@@ -853,7 +904,7 @@ function onWrong(el){
   markPlayDay(); save();
   const fb = $('#fb');
   if (R.tries === 1){
-    fb.className = 'feedback soft'; fb.textContent = 'おしい！ もういちど';
+    fb.className = 'feedback soft'; fb.innerHTML = jp('おしい！ もういちど');
     if (el && el.classList.contains('choice')){ el.classList.add('wrong'); }
     else { R.input = ''; updateInput(); const box = $('#inputbox'); if (box){ box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); } }
     return;
@@ -862,7 +913,7 @@ function onWrong(el){
   R.results[R.i] = 'miss';
   fb.className = 'feedback soft';
   fb.innerHTML = '<span class="reveal">こたえは <b style="font-size:1.3em">' + p.answer + '</b> だよ</span>';
-  const q = $('#qmark'); if (q) q.textContent = p.answer;
+  const q = $('#qmark'); if (q){ q.textContent = p.answer; fitProb(); }
   document.querySelectorAll('.choice').forEach(b => { if (+b.dataset.arg === p.answer) b.classList.add('right'); else b.classList.add('wrong'); });
   speak('こたえは ' + p.answer + ' だよ');
   $('#answer').insertAdjacentHTML('beforeend', '<button class="btn nextbtn" data-act="next" style="margin-top:12px">つぎへ ▶</button>');
@@ -906,11 +957,11 @@ function showResult(unlocked, bonus){
   render('<div style="--c:' + c + ';display:contents">' + topbar() +
     '<div class="result">' +
       '<div class="bigstars">' + [0, 1, 2].map(i => '<span class="' + (i < stars ? '' : 'off') + '">⭐</span>').join('') + '</div>' +
-      '<div class="rtext">' + (nick() ? esc(nick()) + '、' : '') + msg + '</div>' +
-      '<div class="rsub">' + n + 'もんの うち ' + R.firstCorrect + 'もん せいかい</div>' +
+      '<div class="rtext">' + jp((nick() ? nick() + '、' : '') + msg) + '</div>' +
+      '<div class="rsub">' + jp(n + 'もんの うち ' + R.firstCorrect + 'もん せいかい') + '</div>' +
       '<div class="gain">⭐ +' + R.gained + '</div>' +
-      (bonus ? '<div class="rsub">ぜんぶ せいかい ボーナス +' + bonus + '</div>' : '') +
-      (unlocked ? '<div class="unlock">🔓 あたらしい だんかいが ひらいたよ！<br>' + '★'.repeat(R.level + 1) + '</div>' : '') +
+      (bonus ? '<div class="rsub">' + jp('ぜんぶ せいかい ボーナス +' + bonus) + '</div>' : '') +
+      (unlocked ? '<div class="unlock">' + jp('🔓 あたらしい だんかいが ひらいたよ！') + '<div class="ustars">' + '★'.repeat(R.level + 1) + '</div></div>' : '') +
       '<div class="rbtns">' +
         (unlocked ? '<button class="btn primary" data-act="nextLevel">つぎの だんかいへ ▶</button>' : '') +
         (R.reviewMode ? '' : '<button class="btn ' + (unlocked ? '' : 'primary') + '" data-act="again">🔁 もういちど</button>') +
@@ -926,7 +977,7 @@ function showStickers(){
   screen = 'stickers';
   const got = D.progress.stickers;
   render(topbar({back: 'home'}) + '<h2 class="title">📒 シール</h2><div class="scount">' + got.length + ' / ' + STICKERS.length + '</div><div class="sgrid">' +
-    STICKERS.map(s => { const has = got.indexOf(s.id) >= 0; return '<button class="sticker ' + (has ? '' : 'no') + '" data-act="stickerSay" data-arg="' + s.id + '"><span class="e">' + s.e + '</span><span class="n">' + (has ? s.n : '？') + '</span></button>'; }).join('') +
+    STICKERS.map(s => { const has = got.indexOf(s.id) >= 0; return '<button class="sticker ' + (has ? '' : 'no') + '" data-act="stickerSay" data-arg="' + s.id + '"><span class="e">' + s.e + '</span><span class="n">' + (has ? jp(s.n) : '？') + '</span></button>'; }).join('') +
     '</div>');
 }
 
@@ -948,7 +999,8 @@ function showCalendar(){
   for (let i = 0; i < first.getDay(); i++) cells += '<div class="d empty"></div>';
   for (let d = 1; d <= days; d++){
     const ds = y + '-' + pad2(m + 1) + '-' + pad2(d), p = set.has(ds);
-    cells += '<div class="d ' + (p ? 'play ' : '') + (ds === t ? 'today' : '') + '">' + (p ? '<b>🌸</b>' : '') + '<span>' + d + '</span></div>';
+    // 「play」は ホームの あそぶボタンと 名前が かぶるので「played」
+    cells += '<div class="d ' + (p ? 'played ' : '') + (ds === t ? 'today' : '') + '">' + (p ? '<b>🌸</b>' : '') + '<span>' + d + '</span></div>';
   }
   render(topbar({back: 'home'}) + '<h2 class="title">📅 カレンダー</h2>' +
     '<div class="totals"><div class="total"><div class="v">🌸 ' + D.progress.playDays.length + '</div><div class="l">あそんだ ひ</div></div>' +
@@ -1109,11 +1161,16 @@ const ACT = {
   chara: (_, el) => {
     SFX.tap(); el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce');
     const lines = ['えへへ！', 'くすぐったい！', 'いっしょに あそぼう！', 'ほしを あつめると おおきく なるよ', 'きょうの おやくそく みてね'];
-    const b = $('#bubble'); const t = pick(lines); if (b) b.textContent = t; speak(t);
+    const b = $('#bubble'); const t = pick(lines); if (b) b.innerHTML = jp(t); speak(t);
   },
   stickerSay: id => { const s = STICKERS.find(x => x.id === id); if (!s) return; speak(D.progress.stickers.indexOf(id) >= 0 ? s.n : 'まだ ひみつ'); },
   say: () => sayProblem(),
-  hint: () => { SFX.tap(); const h = $('#hint'); if (h) h.classList.toggle('show'); },
+  hint: () => {
+    SFX.tap(); const h = $('#hint'); if (!h) return;
+    h.classList.toggle('show');
+    // それでも はみでる ちいさい がめんでは、こたえの ボタンが みえる ところまで うごかす
+    const a = $('#answer'); if (h.classList.contains('show') && a && a.getBoundingClientRect().bottom > innerHeight) a.scrollIntoView({block: 'end', behavior: 'smooth'});
+  },
   choose: (v, el) => giveAnswer(+v, el),
   digit: d => { if (round.locked) return; if (round.input.length >= 6) return; SFX.tap(); round.input = (round.input === '0' ? '' : round.input) + d; updateInput(); },
   del: () => { if (round.locked) return; SFX.tap(); round.input = round.input.slice(0, -1); updateInput(); },

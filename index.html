@@ -389,20 +389,59 @@ function makeChoices(p){
   return shuffle([ans].concat(out));
 }
 
-// 1かいぶんの問題（同じ問題はできるだけ出さない・つづけては出さない）
-function makeRound(op, level, n){
+// --- さいきん出た問題を さける（たしざん・ひきざん） ---
+// recent：その計算・段階で さいきん出た問題の key のならび（ほぞんして 次の回に わたす）
+const RECENT_MAX = 40;                                 // 問題が多い段階で おぼえておく数（およそ4回ぶん）
+function usesRecent(op){ return op === 'add' || op === 'sub'; }
+// 問題の種類が少ない段階は、ぜんぶ ならべて トランプのように くばる
+function smallPool(op, level){
+  if (level !== 1) return null;
+  const out = [];
+  if (op === 'add') for (let a = 1; a <= 9; a++) for (let b = 1; b <= 9; b++) out.push({op, level, a, b, answer: a + b});
+  if (op === 'sub') for (let a = 2; a <= 9; a++) for (let b = 1; b < a; b++) out.push({op, level, a, b, answer: a - b});
+  return out.length ? out : null;
+}
+
+// 1かいぶんの問題（同じ問題は出さない・さいきん出た問題も できるだけ出さない）
+// exclude：この回に ふつうの問題として 出さない key（おさらいリストに 入っている問題）
+function makeRound(op, level, n, recent, exclude){
+  const avoid = new Set(recent || []), ex = new Set(exclude || []);
+  let pool = usesRecent(op) ? smallPool(op, level) : null;
+  if (pool && pool.filter(p => !ex.has(problemKey(p))).length >= n) pool = pool.filter(p => !ex.has(problemKey(p)));
+  if (pool && pool.length >= n){
+    // まだ出ていない問題から くばる。たりなければ のこりを ぜんぶ出してから 1周目に もどる
+    const fresh = shuffle(pool.filter(p => !avoid.has(problemKey(p))));
+    const used = new Set(fresh.slice(0, n).map(problemKey));
+    const last = new Set((recent || []).slice(-n));     // すぐ前の回の問題（recent の さいごに ならんでいる）
+    const rest = pool.filter(p => !used.has(problemKey(p)));
+    const refill = shuffle(rest.filter(p => !last.has(problemKey(p)))).concat(shuffle(rest.filter(p => last.has(problemKey(p)))));
+    const out = fresh.concat(refill).slice(0, n).map(p => Object.assign({}, p));
+    out.newCycle = fresh.length < n;                   // この回で 1周を 出しきった
+    return out;
+  }
   const list = [], keys = new Set();
   while (list.length < n){
     let p = null;
     for (let t = 0; t < 60; t++){
       const c = makeProblem(op, level), k = problemKey(c);
       const prev = list.length ? problemKey(list[list.length - 1]) : null;
-      if (t < 30 ? !keys.has(k) : k !== prev){ p = c; break; }
+      if (t < 40 ? !keys.has(k) && !avoid.has(k) && !ex.has(k) : t < 50 ? !keys.has(k) && !ex.has(k) : k !== prev){ p = c; break; }
     }
     if (!p) p = makeProblem(op, level);
     keys.add(problemKey(p)); list.push(p);
   }
   return list;
+}
+// 1回 おわったら、さいきん出た問題の ならびを 新しくする
+// newCycle：makeRound が「この回で 1周を 出しきった」と 知らせたとき true
+function updateRecent(op, level, recent, list, newCycle){
+  const keys = list.map(problemKey), pool = smallPool(op, level);
+  if (pool){
+    // 1周（ぜんぶの問題）を出しきったら、この回の問題だけ おぼえて 2周目へ
+    const seen = new Set((recent || []).concat(keys));
+    return newCycle || seen.size >= pool.length ? keys : Array.from(seen);
+  }
+  return (recent || []).filter(k => keys.indexOf(k) < 0).concat(keys).slice(-RECENT_MAX);
 }
 // </generator>
 
@@ -479,6 +518,8 @@ function defaultData(){
       playDays: [],
       lastAnswerMode: null,
       lastOpenDay: null,
+      recent: {},     // 計算・段階ごとに さいきん出た問題（たしざん・ひきざん）
+      roundSeq: 0,    // あそんだ回の通し番号（おさらいを 1回 あけるため）
       counters: {totalCorrect: 0, maxStreak: 0, reviewCorrect: 0, missionAll: 0, perfect: 0, inputRounds: 0, rounds: {add: 0, sub: 0, mul: 0, div: 0}}
     },
     daily: {date: null, missions: []}
@@ -803,10 +844,17 @@ function startRound(op, level, reviewMode){
   if (reviewMode){
     items = shuffle(D.progress.review.slice()).slice(0, n).map(r => Object.assign({}, r, {isReview: true}));
   } else {
-    items = makeRound(op, level, n);
-    const rv = shuffle(D.progress.review.filter(r => r.op === op)).slice(0, Math.min(3, Math.floor(n / 3)));
+    const seq = ++D.progress.roundSeq;
+    // おさらいの問題。たしざん・ひきざんは、まぜた つぎの回は やすみ（1回 あけてから また出す）
+    const rvOk = r => r.op === op && (!usesRecent(op) || r.shownAt == null || seq - r.shownAt >= 2);
+    const rv = shuffle(D.progress.review.filter(rvOk)).slice(0, Math.min(3, Math.floor(n / 3)));
+    const rk = statKey(op, level), recent = usesRecent(op) ? (D.progress.recent[rk] || []) : null;
+    const reviewKeys = usesRecent(op) ? D.progress.review.filter(r => r.op === op).map(problemKey) : null;
+    items = makeRound(op, level, n, recent, reviewKeys);
     const slots = shuffle(Array.from({length: n - 1}, (_, i) => i + 1)).slice(0, rv.length); // 1もんめは ふつうの問題
-    rv.forEach((r, i) => { items[slots[i]] = Object.assign({}, r, {isReview: true}); });
+    rv.forEach((r, i) => { r.shownAt = seq; items[slots[i]] = Object.assign({}, r, {isReview: true}); });
+    if (recent) D.progress.recent[rk] = updateRecent(op, level, recent, items.filter(p => !p.isReview), items.newCycle);
+    save();
   }
   if (!items.length) return showHome();
   round = {op: reviewMode ? 'mix' : op, level, reviewMode: !!reviewMode, mode: currentMode(), items, i: 0, results: [], firstCorrect: 0, streak: 0, gained: 0};

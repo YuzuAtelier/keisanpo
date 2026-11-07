@@ -167,7 +167,8 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
 .sticker{background:var(--card);border-radius:20px;min-height:136px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 0 rgba(74,59,42,.1);padding:10px 8px}
 .sticker .e{font-size:56px;line-height:1.1}
-.sticker .n{font-size:18px;font-weight:800;text-align:center;line-height:1.35}
+.sticker .n{font-size:clamp(15px,4.8vw,18px);font-weight:800;text-align:center;line-height:1.35;display:flex;flex-direction:column;align-items:center}
+.sticker .sl{white-space:nowrap} /* 1行ずつ きめた ところで だけ 改行する */
 .sticker.no .e{filter:brightness(0);opacity:.15}
 .sticker.no .n{color:var(--muted);font-size:24px}
 .scount{text-align:center;font-size:22px;font-weight:800}
@@ -417,28 +418,31 @@ const STAGES = [
   {min: 400, e: '🦚', n: 'くじゃく'}
 ];
 const PRAISE = ['せいかい！', 'すごい！', 'やったね！', 'ばっちり！', 'いいね！', 'さすが！'];
+// n の「／」は シールの なまえを 改行する いち（ほかの ところでは 改行しない）
 const STICKERS = [
-  {id: 'first',    e: '🌱', n: 'はじめての せいかい',     ok: d => d.progress.counters.totalCorrect >= 1},
-  {id: 'perfect',  e: '🌈', n: '10もん ぜんぶ せいかい', ok: d => d.progress.counters.perfect >= 1},
-  {id: 'add',      e: '🍎', n: 'たしざん デビュー',       ok: d => d.progress.counters.rounds.add >= 1},
-  {id: 'sub',      e: '🐳', n: 'ひきざん デビュー',       ok: d => d.progress.counters.rounds.sub >= 1},
-  {id: 'mul',      e: '🍀', n: 'かけざん デビュー',       ok: d => d.progress.counters.rounds.mul >= 1},
-  {id: 'div',      e: '🍇', n: 'わりざん デビュー',       ok: d => d.progress.counters.rounds.div >= 1},
-  {id: 'input',    e: '✏️', n: 'すうじを いれて あそんだ', ok: d => d.progress.counters.inputRounds >= 1},
-  {id: 'streak5',  e: '🔥', n: '5もん れんぞく せいかい', ok: d => d.progress.counters.maxStreak >= 5},
-  {id: 'streak10', e: '🚀', n: '10もん れんぞく せいかい', ok: d => d.progress.counters.maxStreak >= 10},
-  {id: 'review5',  e: '🧸', n: 'おさらい 5もん せいかい', ok: d => d.progress.counters.reviewCorrect >= 5},
-  {id: 'mission',  e: '🌸', n: 'おやくそく ぜんぶ できた', ok: d => d.progress.counters.missionAll >= 1},
-  {id: 'mission5', e: '💐', n: 'おやくそく ぜんぶ 5かい', ok: d => d.progress.counters.missionAll >= 5},
-  {id: 'day3',     e: '⭐', n: '3にち あそんだ',          ok: d => d.progress.playDays.length >= 3},
-  {id: 'day7',     e: '🎈', n: '7にち あそんだ',          ok: d => d.progress.playDays.length >= 7},
-  {id: 'day14',    e: '🎁', n: '14にち あそんだ',         ok: d => d.progress.playDays.length >= 14},
-  {id: 'day30',    e: '👑', n: '30にち あそんだ',         ok: d => d.progress.playDays.length >= 30},
-  {id: 'star100',  e: '🌙', n: 'ほし 100こ',             ok: d => d.progress.stars >= 100},
-  {id: 'star300',  e: '☀️', n: 'ほし 300こ',             ok: d => d.progress.stars >= 300},
-  {id: 'lv3',      e: '🏔️', n: 'だんかい3 ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 3)},
-  {id: 'lv5',      e: '🏆', n: 'だんかい5 ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 5)}
+  {id: 'first',    e: '🌱', n: 'はじめての／せいかい',     ok: d => d.progress.counters.totalCorrect >= 1},
+  {id: 'perfect',  e: '🌈', n: '10もん ぜんぶ／せいかい', ok: d => d.progress.counters.perfect >= 1},
+  {id: 'add',      e: '🍎', n: 'たしざん／デビュー',       ok: d => d.progress.counters.rounds.add >= 1},
+  {id: 'sub',      e: '🐳', n: 'ひきざん／デビュー',       ok: d => d.progress.counters.rounds.sub >= 1},
+  {id: 'mul',      e: '🍀', n: 'かけざん／デビュー',       ok: d => d.progress.counters.rounds.mul >= 1},
+  {id: 'div',      e: '🍇', n: 'わりざん／デビュー',       ok: d => d.progress.counters.rounds.div >= 1},
+  {id: 'input',    e: '✏️', n: 'すうじを いれて／あそんだ', ok: d => d.progress.counters.inputRounds >= 1},
+  {id: 'streak5',  e: '🔥', n: '5もん れんぞく／せいかい', ok: d => d.progress.counters.maxStreak >= 5},
+  {id: 'streak10', e: '🚀', n: '10もん れんぞく／せいかい', ok: d => d.progress.counters.maxStreak >= 10},
+  {id: 'review5',  e: '🧸', n: 'おさらい 5もん／せいかい', ok: d => d.progress.counters.reviewCorrect >= 5},
+  {id: 'mission',  e: '🌸', n: 'おやくそく／ぜんぶ できた', ok: d => d.progress.counters.missionAll >= 1},
+  {id: 'mission5', e: '💐', n: 'おやくそく ぜんぶ／5かい', ok: d => d.progress.counters.missionAll >= 5},
+  {id: 'day3',     e: '⭐', n: '3にち／あそんだ',          ok: d => d.progress.playDays.length >= 3},
+  {id: 'day7',     e: '🎈', n: '7にち／あそんだ',          ok: d => d.progress.playDays.length >= 7},
+  {id: 'day14',    e: '🎁', n: '14にち／あそんだ',         ok: d => d.progress.playDays.length >= 14},
+  {id: 'day30',    e: '👑', n: '30にち／あそんだ',         ok: d => d.progress.playDays.length >= 30},
+  {id: 'star100',  e: '🌙', n: 'ほし／100こ',             ok: d => d.progress.stars >= 100},
+  {id: 'star300',  e: '☀️', n: 'ほし／300こ',             ok: d => d.progress.stars >= 300},
+  {id: 'lv3',      e: '🏔️', n: 'だんかい3／ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 3)},
+  {id: 'lv5',      e: '🏆', n: 'だんかい5／ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 5)}
 ];
+function stickerName(s){ return s.n.replace(/／/g, ' '); }               // よみあげ用
+function stickerHTML(s){ return s.n.split('／').map(t => '<span class="sl">' + esc(t) + '</span>').join(''); }
 const MISSIONS = {
   finish:  {icon: '🏁', target: 1,  text: () => '1かい さいごまで あそぶ'},
   op:      {icon: null, target: 5,  text: m => OPS[m.op].name + 'で 5もん せいかい'},
@@ -977,7 +981,7 @@ function showStickers(){
   screen = 'stickers';
   const got = D.progress.stickers;
   render(topbar({back: 'home'}) + '<h2 class="title">📒 シール</h2><div class="scount">' + got.length + ' / ' + STICKERS.length + '</div><div class="sgrid">' +
-    STICKERS.map(s => { const has = got.indexOf(s.id) >= 0; return '<button class="sticker ' + (has ? '' : 'no') + '" data-act="stickerSay" data-arg="' + s.id + '"><span class="e">' + s.e + '</span><span class="n">' + (has ? jp(s.n) : '？') + '</span></button>'; }).join('') +
+    STICKERS.map(s => { const has = got.indexOf(s.id) >= 0; return '<button class="sticker ' + (has ? '' : 'no') + '" data-act="stickerSay" data-arg="' + s.id + '"><span class="e">' + s.e + '</span><span class="n">' + (has ? stickerHTML(s) : '？') + '</span></button>'; }).join('') +
     '</div>');
 }
 
@@ -1163,7 +1167,7 @@ const ACT = {
     const lines = ['えへへ！', 'くすぐったい！', 'いっしょに あそぼう！', 'ほしを あつめると おおきく なるよ', 'きょうの おやくそく みてね'];
     const b = $('#bubble'); const t = pick(lines); if (b) b.innerHTML = jp(t); speak(t);
   },
-  stickerSay: id => { const s = STICKERS.find(x => x.id === id); if (!s) return; speak(D.progress.stickers.indexOf(id) >= 0 ? s.n : 'まだ ひみつ'); },
+  stickerSay: id => { const s = STICKERS.find(x => x.id === id); if (!s) return; speak(D.progress.stickers.indexOf(id) >= 0 ? stickerName(s) : 'まだ ひみつ'); },
   say: () => sayProblem(),
   hint: () => {
     SFX.tap(); const h = $('#hint'); if (!h) return;

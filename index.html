@@ -211,12 +211,20 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 table.stats{width:100%;border-collapse:collapse;font-size:14px;text-align:center}
 table.stats th,table.stats td{border-bottom:1px solid var(--line);padding:6px 2px}
 table.stats th:first-child,table.stats td:first-child{text-align:left}
-.pnote{font-size:13px;color:#8A7A64;line-height:1.6;margin:6px 0 0}
+.pnote{font-size:13px;color:#8A7A64;line-height:1.6;margin:6px 0 0;word-break:auto-phrase}
 .mistakes{font-size:15px;line-height:1.8}
 
 /* pin */
 .pinwrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:10px}
-.pinmsg{font-size:20px;font-weight:700;text-align:center}
+.pinmsg{font-size:18px;font-weight:700;text-align:center;text-wrap:balance;word-break:auto-phrase}
+.pinsub{font-size:14px;color:#8A7A64;text-align:center;margin-top:-6px}
+.pinfo{background:var(--card);border-radius:16px;padding:12px 16px;font-size:14px;line-height:1.65;box-shadow:0 3px 0 rgba(74,59,42,.08);width:100%;word-break:auto-phrase}
+.pinfo-t{display:block;font-size:16px;border-left:5px solid var(--add);padding-left:8px;margin-bottom:4px}
+.pinfo p{margin:4px 0}
+.pinfo ul{margin:4px 0;padding-left:1.2em}
+.pinfo-s{color:#8A7A64;font-size:13px}
+.pintro{font-size:14px;line-height:1.6;color:#6E5C45;margin:0 4px;word-break:auto-phrase}
+.pdesc{font-size:13px;color:#8A7A64;margin:-4px 0 6px;line-height:1.5;word-break:auto-phrase}
 .pindots{display:flex;gap:14px}
 .pindots i{width:22px;height:22px;border-radius:50%;border:3px solid var(--ink);display:block}
 .pindots i.on{background:var(--ink)}
@@ -495,6 +503,8 @@ function migrate(obj){
   d.schemaVersion = 1;
   OP_KEYS.forEach(k => { d.progress.unlocked[k] = Math.min(5, Math.max(1, d.progress.unlocked[k] | 0)); });
   if (!OP_KEYS.some(k => d.settings.enabledOps[k])) d.settings.enabledOps.add = true;
+  // おうちの人の画面から はずした 設定は、子どもが 自分で きめる 形に もどす（ヒントは いつも つかえる・段階は 自分で ひらく）
+  d.settings.hint = true; d.settings.unlockAll = false; d.settings.defaultAnswerMode = 'choice';
   return d;
 }
 function load(){
@@ -1033,10 +1043,21 @@ function showPin(mode){
   renderPin('');
 }
 function renderPin(err){
-  const msgs = {enter: '暗証番号（4けた）を入力してください', set1: 'おうちの人用の暗証番号（4けた）を決めてください', set2: 'もう一度入力してください', quiz: '大人の方の確認です：' + (pin.quiz ? pin.quiz.a + ' × ' + pin.quiz.b + ' = ?' : '')};
+  const msgs = {enter: '暗証番号（4けた）を入力してください', set1: '暗証番号（4けた）を決めてください', set2: '確認のため、もう一度入力してください', quiz: '大人の方の確認です：' + (pin.quiz ? pin.quiz.a + ' × ' + pin.quiz.b + ' = ?' : '')};
   const len = pin.mode === 'quiz' ? 0 : 4;
+  // はじめて 暗証番号を きめるときだけ、この画面で できることと 入り方を 説明する
+  const info = pin.mode !== 'set1' ? '' :
+    '<div class="pinfo"><b class="pinfo-t">おうちの人の画面について</b>' +
+    '<p>お子さんの様子を見守り、遊ぶ前の準備をするための画面です。</p>' +
+    '<ul><li><b>見る</b>：遊んだ日数、計算ごとの正解率、まちがえた問題</li>' +
+    '<li><b>準備する</b>：呼び名、出題する計算、1回の問題数、音</li>' +
+    '<li><b>守る</b>：記録の書き出し・読み込み</li></ul>' +
+    '<p>どの段階に進むか、ヒントを使うかは、お子さんが自分で決めます。</p>' +
+    '<p><b>入り方</b>：ホーム右上の ⚙️ を3秒ながおしして、暗証番号を入れます。</p>' +
+    '<p class="pinfo-s">暗証番号はこの端末の中だけに保存されます。</p></div>';
+  const sub = pin.mode === 'enter' ? '<div class="pinsub">成績を見たり、設定を変えたりする画面です。</div>' : '';
   render('<div class="parent">' + '<div class="topbar"><button class="btn icon" data-act="home" aria-label="もどる">⬅️</button><h2 style="margin-left:8px">おうちの人</h2></div>' +
-    '<div class="pinwrap"><div class="pinmsg">' + msgs[pin.mode] + '</div>' +
+    '<div class="pinwrap">' + info + '<div class="pinmsg">' + msgs[pin.mode] + '</div>' + sub +
     (len ? '<div class="pindots">' + [0, 1, 2, 3].map(i => '<i class="' + (i < pin.buf.length ? 'on' : '') + '"></i>').join('') + '</div>' : '<div class="inputbox" style="min-width:200px;font-size:40px">' + (pin.buf || '&nbsp;') + '</div>') +
     '<div class="pinmsg" style="color:#C44;min-height:26px;font-size:16px">' + (err || '') + '</div>' +
     '<div class="pinpad">' + [1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => '<button class="btn" data-act="pinDigit" data-arg="' + d + '">' + d + '</button>').join('') +
@@ -1082,30 +1103,29 @@ function showParent(){
   const unlockTxt = OP_KEYS.map(k => OPS[k].sym + ' 段階' + P.unlocked[k]).join('　');
   render('<div class="parent" style="display:flex;flex-direction:column;gap:12px">' +
     '<div class="topbar"><button class="btn icon" data-act="home" aria-label="もどる">⬅️</button><h2 style="margin-left:8px">おうちの人の画面</h2></div>' +
-    '<div class="psec"><h3>成績</h3>' +
+    '<p class="pintro">お子さんの様子を見守り、遊ぶ前の準備をするための画面です。どの段階に進むか、ヒントを使うかは、お子さんが自分で決めます。</p>' +
+    // 見守る
+    '<div class="psec"><h3>成績を見る</h3><p class="pdesc">続けられているか、どの計算が得意かを確認できます。</p>' +
       '<div class="prow"><span>遊んだ日数</span><b>' + P.playDays.length + '日（連続 ' + streakDays() + '日）</b></div>' +
       '<div class="prow"><span>集めたほし</span><b>' + P.stars + '</b></div>' +
       '<div class="prow"><span>シール</span><b>' + P.stickers.length + ' / ' + STICKERS.length + '</b></div>' +
+      '<div class="prow"><span style="white-space:nowrap">ひらいた段階</span><b style="font-size:14px;text-align:right;word-break:keep-all">' + unlockTxt + '</b></div>' +
       '<div style="margin-top:8px">' + table + '</div>' +
-      '<p class="pnote">正解率は1回目の答えで計算しています（おさらいの問題は含みません）。</p>' +
-      '<div class="prow" style="display:block"><div style="margin-bottom:4px">おさらい中の問題（最近10問）</div><div class="mistakes">' + mistakes + '</div></div>' +
+      '<p class="pnote">正解率は1回目の答えで計算しています（おさらいの問題は含みません）。次の段階は、10問中8問（5問なら4問）以上正解すると、お子さんが自分でひらきます。</p>' +
+      '<div class="prow" style="display:block"><div style="margin-bottom:4px">おさらい中の問題（最近10問）</div><div class="mistakes">' + mistakes + '</div>' +
+      '<p class="pnote">まちがえた問題は「おさらい」に入り、2回正解すると外れます。</p></div>' +
     '</div>' +
-    '<div class="psec"><h3>子どもの呼び名</h3><div class="prow"><label for="nick">ひらがなで（例：たろう）</label><input type="text" id="nick" data-set="nickname" maxlength="8" value="' + esc(D.profile.nickname) + '"></div></div>' +
-    '<div class="psec"><h3>出題する計算</h3>' +
+    // 準備する
+    '<div class="psec"><h3>子どもの呼び名</h3><p class="pdesc">ほめるときなどに、ぴよが名前で呼びかけます。</p><div class="prow"><label for="nick">ひらがなで（例：たろう）</label><input type="text" id="nick" data-set="nickname" maxlength="8" value="' + esc(D.profile.nickname) + '"></div></div>' +
+    '<div class="psec"><h3>出題する計算</h3><p class="pdesc">年齢に合わない計算は、オフにすると「どの けいさん？」の画面に出なくなります。</p>' +
       swRow('たし算（＋）', 'op-add', S.enabledOps.add) + swRow('ひき算（−）', 'op-sub', S.enabledOps.sub) + swRow('かけ算（×）', 'op-mul', S.enabledOps.mul) + swRow('わり算（÷）', 'op-div', S.enabledOps.div) +
       '<p class="pnote">少なくとも1つはオンにしてください。わり算は割り切れる問題だけが出ます。</p></div>' +
-    '<div class="psec"><h3>遊び方</h3>' +
+    '<div class="psec"><h3>問題の数と音</h3><p class="pdesc">集中できる長さや、遊ぶ場所に合わせて変えられます。</p>' +
       '<div class="prow"><label for="qpr">1回の問題数</label><select id="qpr" data-set="questionsPerRound"><option value="5"' + (S.questionsPerRound === 5 ? ' selected' : '') + '>5問</option><option value="10"' + (S.questionsPerRound === 10 ? ' selected' : '') + '>10問</option></select></div>' +
-      '<div class="prow"><label for="dam">答え方の初期設定</label><select id="dam" data-set="defaultAnswerMode"><option value="choice"' + (S.defaultAnswerMode === 'choice' ? ' selected' : '') + '>4つから選ぶ</option><option value="input"' + (S.defaultAnswerMode === 'input' ? ' selected' : '') + '>数字を入れる</option></select></div>' +
       swRow('効果音', 'sound', S.sound) +
       swRow('読み上げ（🔊ボタン）' + (canSpeak ? '' : '<br><small style="color:#C44">この端末では使えません</small>'), 'speech', S.speech) +
-      swRow('ヒント（💡りんごの絵）', 'hint', S.hint) +
     '</div>' +
-    '<div class="psec"><h3>段階</h3>' +
-      '<div class="prow"><span>今ひらいている段階</span><b style="font-size:14px">' + unlockTxt + '</b></div>' +
-      swRow('すべての段階をひらく', 'unlockAll', S.unlockAll) +
-      '<p class="pnote">通常は10問中8問（5問なら4問）以上正解すると、次の段階がひらきます。</p>' +
-      '<div class="pbtns"><button class="pbtn" data-act="resetUnlock">段階を最初の状態に戻す</button></div></div>' +
+    // まもる
     '<div class="psec"><h3>データ</h3>' +
       '<p class="pnote" style="margin:0 0 10px">記録はこの端末の中だけに保存されています。機種変更や念のための保存には「書き出し」を使ってください。</p>' +
       '<div class="pbtns"><button class="pbtn" data-act="export">書き出し（JSON）</button><button class="pbtn" data-act="import">読み込み</button><button class="pbtn" data-act="changePin">暗証番号の変更</button><button class="pbtn danger" data-act="resetAll">すべてリセット</button></div></div>' +
@@ -1193,10 +1213,6 @@ const ACT = {
   changePin: () => showPin('set1'),
   export: () => exportData(),
   import: () => $('#importFile').click(),
-  resetUnlock: async () => {
-    if (!(await confirmBox('段階を最初の状態に戻しますか？', 'ほしやシールはそのまま残ります。', '戻す'))) return;
-    D.progress.unlocked = {add: 1, sub: 1, mul: 1, div: 1}; D.settings.unlockAll = false; save(); showParent();
-  },
   resetAll: async () => {
     if (!(await confirmBox('すべての記録を消しますか？', 'ほし・シール・カレンダー・設定がすべて消えます。', '消す'))) return;
     if (!(await confirmBox('本当に消しますか？', '元に戻せません。先に「書き出し」で保存することをおすすめします。', 'すべて消す'))) return;

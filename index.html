@@ -170,6 +170,10 @@ button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;tou
 .sticker .n{font-size:clamp(15px,4.8vw,18px);font-weight:800;text-align:center;line-height:1.35;display:flex;flex-direction:column;align-items:center}
 .sticker .sl{white-space:nowrap} /* 1行ずつ きめた ところで だけ 改行する */
 .sticker.no .e{filter:brightness(0);opacity:.15}
+/* シールの え：けいさんの きごう（いろの まる）と、みぎうえの かずの ふだ */
+.sico{position:relative;display:inline-block;line-height:1}
+.ssym{display:inline-flex;align-items:center;justify-content:center;width:1.55em;height:1.55em;border-radius:50%;color:#fff;font-weight:900;font-size:.72em;line-height:1;box-shadow:inset 0 -.12em 0 rgba(0,0,0,.15)}
+.sbadge{position:absolute;top:-.12em;right:-.42em;min-width:1.5em;height:1.5em;padding:0 .35em;border-radius:999px;background:var(--ink);color:#fff;font-size:.34em;font-weight:900;line-height:1.5em;text-align:center;white-space:nowrap;box-shadow:0 2px 0 rgba(74,59,42,.2)}
 .sticker.no .n{color:var(--muted);font-size:24px}
 .scount{text-align:center;font-size:22px;font-weight:800}
 
@@ -466,30 +470,37 @@ const STAGES = [
 ];
 const PRAISE = ['せいかい！', 'すごい！', 'やったね！', 'ばっちり！', 'いいね！', 'さすが！'];
 // n の「／」は シールの なまえを 改行する いち（ほかの ところでは 改行しない）
+// e＝え（アプリの なかで おなじ いみに つかっている えに そろえる）、op＝けいさんの きごうと いろで かく、b＝えの みぎうえの かずの ふだ
+// id は かえない（あつめた シールの きろくに つかう）
 const STICKERS = [
-  {id: 'first',    e: '🌱', n: 'はじめての／せいかい',     ok: d => d.progress.counters.totalCorrect >= 1},
-  {id: 'perfect',  e: '🌈', n: '10もん ぜんぶ／せいかい', ok: d => d.progress.counters.perfect >= 1},
-  {id: 'add',      e: '🍎', n: 'たしざん／デビュー',       ok: d => d.progress.counters.rounds.add >= 1},
-  {id: 'sub',      e: '🐳', n: 'ひきざん／デビュー',       ok: d => d.progress.counters.rounds.sub >= 1},
-  {id: 'mul',      e: '🍀', n: 'かけざん／デビュー',       ok: d => d.progress.counters.rounds.mul >= 1},
-  {id: 'div',      e: '🍇', n: 'わりざん／デビュー',       ok: d => d.progress.counters.rounds.div >= 1},
-  {id: 'input',    e: '✏️', n: 'すうじを いれて／あそんだ', ok: d => d.progress.counters.inputRounds >= 1},
-  {id: 'streak5',  e: '🔥', n: '5もん れんぞく／せいかい', ok: d => d.progress.counters.maxStreak >= 5},
-  {id: 'streak10', e: '🚀', n: '10もん れんぞく／せいかい', ok: d => d.progress.counters.maxStreak >= 10},
-  {id: 'review5',  e: '🧸', n: 'おさらい 5もん／せいかい', ok: d => d.progress.counters.reviewCorrect >= 5},
-  {id: 'mission',  e: '🌸', n: 'おやくそく／ぜんぶ できた', ok: d => d.progress.counters.missionAll >= 1},
-  {id: 'mission5', e: '💐', n: 'おやくそく ぜんぶ／5かい', ok: d => d.progress.counters.missionAll >= 5},
-  {id: 'day3',     e: '⭐', n: '3にち／あそんだ',          ok: d => d.progress.playDays.length >= 3},
-  {id: 'day7',     e: '🎈', n: '7にち／あそんだ',          ok: d => d.progress.playDays.length >= 7},
-  {id: 'day14',    e: '🎁', n: '14にち／あそんだ',         ok: d => d.progress.playDays.length >= 14},
-  {id: 'day30',    e: '👑', n: '30にち／あそんだ',         ok: d => d.progress.playDays.length >= 30},
-  {id: 'star100',  e: '🌙', n: 'ほし／100こ',             ok: d => d.progress.stars >= 100},
-  {id: 'star300',  e: '☀️', n: 'ほし／300こ',             ok: d => d.progress.stars >= 300},
-  {id: 'lv3',      e: '🏔️', n: 'だんかい3／ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 3)},
-  {id: 'lv5',      e: '🏆', n: 'だんかい5／ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 5)}
+  {id: 'first',    e: '🌱',             n: 'はじめての／せいかい',     ok: d => d.progress.counters.totalCorrect >= 1},
+  {id: 'perfect',  e: '💯',             n: '10もん ぜんぶ／せいかい', ok: d => d.progress.counters.perfect >= 1},
+  {id: 'add',      op: 'add',           n: 'たしざん／デビュー',       ok: d => d.progress.counters.rounds.add >= 1},
+  {id: 'sub',      op: 'sub',           n: 'ひきざん／デビュー',       ok: d => d.progress.counters.rounds.sub >= 1},
+  {id: 'mul',      op: 'mul',           n: 'かけざん／デビュー',       ok: d => d.progress.counters.rounds.mul >= 1},
+  {id: 'div',      op: 'div',           n: 'わりざん／デビュー',       ok: d => d.progress.counters.rounds.div >= 1},
+  {id: 'input',    e: '🔢',             n: 'すうじを いれて／あそんだ', ok: d => d.progress.counters.inputRounds >= 1},
+  {id: 'streak5',  e: '🔥', b: '5',     n: '5もん れんぞく／せいかい', ok: d => d.progress.counters.maxStreak >= 5},
+  {id: 'streak10', e: '🔥', b: '10',    n: '10もん れんぞく／せいかい', ok: d => d.progress.counters.maxStreak >= 10},
+  {id: 'review5',  e: '🔁', b: '5',     n: 'おさらい 5もん／せいかい', ok: d => d.progress.counters.reviewCorrect >= 5},
+  {id: 'mission',  e: '🌸',             n: 'おやくそく／ぜんぶ できた', ok: d => d.progress.counters.missionAll >= 1},
+  {id: 'mission5', e: '🌸', b: '5',     n: 'おやくそく ぜんぶ／5かい', ok: d => d.progress.counters.missionAll >= 5},
+  {id: 'day3',     e: '📅', b: '3',     n: '3にち／あそんだ',          ok: d => d.progress.playDays.length >= 3},
+  {id: 'day7',     e: '📅', b: '7',     n: '7にち／あそんだ',          ok: d => d.progress.playDays.length >= 7},
+  {id: 'day14',    e: '📅', b: '14',    n: '14にち／あそんだ',         ok: d => d.progress.playDays.length >= 14},
+  {id: 'day30',    e: '📅', b: '30',    n: '30にち／あそんだ',         ok: d => d.progress.playDays.length >= 30},
+  {id: 'star100',  e: '⭐', b: '100',   n: 'ほし／100こ',             ok: d => d.progress.stars >= 100},
+  {id: 'star300',  e: '🌟', b: '300',   n: 'ほし／300こ',             ok: d => d.progress.stars >= 300},
+  {id: 'lv3',      e: '🔓', b: '★3',    n: 'だんかい3／ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 3)},
+  {id: 'lv5',      e: '🏆', b: '★5',    n: 'だんかい5／ひらいた',       ok: d => OP_KEYS.some(k => d.progress.unlocked[k] >= 5)}
 ];
 function stickerName(s){ return s.n.replace(/／/g, ' '); }               // よみあげ用
 function stickerHTML(s){ return s.n.split('／').map(t => '<span class="sl">' + esc(t) + '</span>').join(''); }
+// シールの え。has＝もっている（もっていない ときは かずの ふだを かくす）
+function stickerIcon(s, has){
+  const pic = s.op ? '<span class="ssym" style="background:var(--' + s.op + ')">' + OPS[s.op].sym + '</span>' : s.e;
+  return '<span class="sico">' + pic + (s.b && has ? '<b class="sbadge">' + esc(s.b) + '</b>' : '') + '</span>';
+}
 const MISSIONS = {
   finish:  {icon: '🏁', target: 1,  text: () => '1かい さいごまで あそぶ'},
   op:      {icon: null, target: 5,  text: m => OPS[m.op].name + 'で 5もん せいかい'},
@@ -730,7 +741,7 @@ function checkStickers(){
   STICKERS.forEach(s => {
     if (D.progress.stickers.indexOf(s.id) < 0 && s.ok(D)){
       D.progress.stickers.push(s.id);
-      toast(s.e, 'あたらしい シール！');
+      toast(stickerIcon(s, true), 'あたらしい シール！');
     }
   });
 }
@@ -1039,7 +1050,7 @@ function showStickers(){
   screen = 'stickers';
   const got = D.progress.stickers;
   render(topbar({back: 'home'}) + '<h2 class="title">📒 シール</h2><div class="scount">' + got.length + ' / ' + STICKERS.length + '</div><div class="sgrid">' +
-    STICKERS.map(s => { const has = got.indexOf(s.id) >= 0; return '<button class="sticker ' + (has ? '' : 'no') + '" data-act="stickerSay" data-arg="' + s.id + '"><span class="e">' + s.e + '</span><span class="n">' + (has ? stickerHTML(s) : '？') + '</span></button>'; }).join('') +
+    STICKERS.map(s => { const has = got.indexOf(s.id) >= 0; return '<button class="sticker ' + (has ? '' : 'no') + '" data-act="stickerSay" data-arg="' + s.id + '"><span class="e">' + stickerIcon(s, has) + '</span><span class="n">' + (has ? stickerHTML(s) : '？') + '</span></button>'; }).join('') +
     '</div>');
 }
 
